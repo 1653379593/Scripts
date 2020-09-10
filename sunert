@@ -49,9 +49,9 @@
           "type": "boolean"
         }
       ],
-       "repo": "https://gitee.com/Sunert/Scripts/blob/master/Task/txnews2.js",
+       "repo": "https://raw.githubusercontent.com/1653379593/Scripts/master/txnews2.js",
        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/txnews.png", "https://raw.githubusercontent.com/Orz-3/task/master/txnews.png"],
-       "script": "https://gitee.com/Sunert/Scripts/raw/master/Task/txnews2.js"
+       "script": "https://raw.githubusercontent.com/1653379593/Scripts/master/txnews2.js"
            },
     {
       "id": "txnews3",
@@ -73,9 +73,9 @@
           "type": "boolean"
         }
       ],
-       "repo": "https://gitee.com/Sunert/Scripts/blob/master/Task/txnews3.js",
+       "repo": "https://raw.githubusercontent.com/1653379593/Scripts/master/txnews3.js",
        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/txnews.png", "https://raw.githubusercontent.com/Orz-3/task/master/txnews.png"],
-       "script": "https://gitee.com/Sunert/Scripts/raw/master/Task/txnews3.js"
+       "script": "https://raw.githubusercontent.com/1653379593/Scripts/master/txnews3.js"
     }
   ]
 }
