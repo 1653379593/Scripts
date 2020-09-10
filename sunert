@@ -76,30 +76,6 @@
        "repo": "https://gitee.com/Sunert/Scripts/blob/master/Task/txnews3.js",
        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/txnews.png", "https://raw.githubusercontent.com/Orz-3/task/master/txnews.png"],
        "script": "https://gitee.com/Sunert/Scripts/raw/master/Task/txnews3.js"
-           },
-    {
-      "id": "txnews4",
-      "name": "腾讯新闻4",
-      "keys": ["sy_signurl_txnews4", "sy_cookie_txnews4","video_txnews4"],
-      "author": "@sunert",
-      "settings": [
-        {
-          "id": "notifynum",
-          "name": "通知频率",
-          "val": 4,
-          "type": "number",
-          "desc": "视频红包间隔通知开为1，常关为0(默认4次)"
-        },
-        {
-          "id": "logsturn",
-          "name": "调试日志",
-          "val": false,
-          "type": "boolean"
-        }
-      ],
-       "repo": "https://gitee.com/Sunert/Scripts/blob/master/Task/txnews4.js",
-       "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/txnews.png", "https://raw.githubusercontent.com/Orz-3/task/master/txnews.png"],
-       "script": "https://gitee.com/Sunert/Scripts/raw/master/Task/txnews4.js"
     }
   ]
 }
