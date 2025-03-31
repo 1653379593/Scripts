@@ -22,7 +22,7 @@ if (url.includes("app.bilibili.com/x/v2/splash/")) {
     body = JSON.stringify(i);
 } else if (url.includes("app.bilibili.com/x/resource/show/tab")) {
     let i = JSON.parse($response.body);
-    // 修改底部导航栏顺序：推荐 → 追番 → 影视 → 直播 → 热门
+    // 核心修复：确保导航栏仅包含推荐、追番、影视、直播、热门，移除动画栏
     i.data.tab = [
         { id: 477, name: "推荐", tab_id: "推荐tab", uri: "bilibili://pegasus/promo", pos: 1, default_selected: 1 },
         { id: 545, name: "追番", tab_id: "bangumi", uri: "bilibili://pgc/home", pos: 2 },
@@ -30,6 +30,8 @@ if (url.includes("app.bilibili.com/x/v2/splash/")) {
         { id: 731, name: "直播", tab_id: "直播tab", uri: "bilibili://live/home", pos: 4 },
         { id: 478, name: "热门", tab_id: "热门tab", uri: "bilibili://pegasus/hottopic", pos: 5 }
     ];
+    // 确保动画栏(id:774)被移除
+    i.data.tab = i.data.tab.filter(item => item.id !== 774);
     if (i.data?.bottom?.length > 3) {
         i.data.top = [{ id: 176, name: "消息", tab_id: "消息Top", uri: "bilibili://link/im_home", icon: "http://i0.hdslb.com/bfs/archive/d43047538e72c9ed8fd8e4e34415fbe3a4f632cb.png", pos: 1 }];
         const e = ["首页", "动态", "我的"];
@@ -39,21 +41,40 @@ if (url.includes("app.bilibili.com/x/v2/splash/")) {
 } else if (url.includes("app.bilibili.com/x/v2/account/mine")) {
     let i = JSON.parse($response.body);
     const e = {
-        ipad_sections: [ /* 原离线缓存、历史记录等配置 */ ],
-        ipad_upper_sections: [ /* 原创作首页配置 */ ],
-        ipad_recommend_sections: [ /* 原我的关注、消息配置 */ ],
-        ipad_more_sections: [ /* 原客服、设置配置 */ ]
+        ipad_sections: [
+            { id: 747, title: "离线缓存", uri: "bilibili://user_center/download", icon: "http://i0.hdslb.com/bfs/feed-admin/9bd72251f7366c491cfe78818d453455473a9678.png", mng_resource: { icon_id: 0, icon: "" } },
+            { id: 748, title: "历史记录", uri: "bilibili://user_center/history", icon: "http://i0.hdslb.com/bfs/feed-admin/83862e10685f34e16a10cfe1f89dbd7b2884d272.png", mng_resource: { icon_id: 0, icon: "" } },
+            { id: 749, title: "我的收藏", uri: "bilibili://user_center/favourite", icon: "http://i0.hdslb.com/bfs/feed-admin/6ae7eff6af627590fc4ed80c905e9e0a6f0e8188.png", mng_resource: { icon_id: 0, icon: "" } },
+            { id: 750, title: "稍后再看", uri: "bilibili://user_center/watch_later", icon: "http://i0.hdslb.com/bfs/feed-admin/928ba9f559b02129e51993efc8afe95014edec94.png", mng_resource: { icon_id: 0, icon: "" } }
+        ],
+        ipad_upper_sections: [
+            { id: 752, title: "创作首页", uri: "/uper/homevc", icon: "http://i0.hdslb.com/bfs/feed-admin/d20dfed3b403c895506b1c92ecd5874abb700c01.png", mng_resource: { icon_id: 0, icon: "" } }
+        ],
+        ipad_recommend_sections: [
+            { id: 755, title: "我的关注", uri: "bilibili://user_center/myfollows", icon: "http://i0.hdslb.com/bfs/feed-admin/fdd7f676030c6996d36763a078442a210fc5a8c0.png", mng_resource: { icon_id: 0, icon: "" } },
+            { id: 756, title: "我的消息", uri: "bilibili://link/im_home", icon: "http://i0.hdslb.com/bfs/feed-admin/e1471740130a08a48b02a4ab29ed9d5f2281e3bf.png", mng_resource: { icon_id: 0, icon: "" } }
+        ],
+        ipad_more_sections: [
+            { id: 763, title: "我的客服", uri: "bilibili://user_center/feedback", icon: "http://i0.hdslb.com/bfs/feed-admin/7801a6180fb67cf5f8ee05a66a4668e49fb38788.png", mng_resource: { icon_id: 0, icon: "" } },
+            { id: 764, title: "设置", uri: "bilibili://user_center/setting", icon: "http://i0.hdslb.com/bfs/feed-admin/34e8faea00b3dd78977266b58d77398b0ac9410b.png", mng_resource: { icon_id: 0, icon: "" } }
+        ]
     };
-    Object.keys(e).forEach((t => { i.data?.[t] && (i.data[t] = e[t]) }));
+    Object.keys(e).forEach((t) => { i.data?.[t] && (i.data[t] = e[t]) });
     if (i.data?.sections_v2) {
         const e = ["离线缓存", "历史记录", "我的收藏", "稍后再看", "个性装扮", "我的钱包", "联系客服", "设置"];
-        i.data.sections_v2.forEach((i => {
+        i.data.sections_v2.forEach((i) => {
             ["创作中心", "創作中心"].includes(i.title) && (i.title = void 0, i.type = void 0),
-            i.items = i.items.filter((i => e.includes(i.title))),
-            "推荐服务" === i.title && i.items.push({ /* 原会员购配置 */ }),
+            i.items = i.items.filter((i) => e.includes(i.title)),
+            "推荐服务" === i.title && i.items.push({
+                id: 622,
+                title: "会员购",
+                icon: "http://i0.hdslb.com/bfs/archive/19c794f01def1a267b894be84427d6a8f67081a9.png",
+                common_op_item: {},
+                uri: "bilibili://mall/home"
+            }),
             i.button = {},
-            delete i.be_up_title, delete i.tip_icon, delete i.tip_title
-        }));
+            delete i.be_up_title, delete i.tip_icon, delete i.tip_title;
+        });
         delete i.data?.answer, delete i.data?.live_tip, delete i.data?.vip_section, delete i.data?.vip_section_v2;
         i.data.vip.status || (i.data.vip_type = 2, i.data.vip.type = 2, i.data.vip.status = 1, i.data.vip.vip_pay_type = 1, i.data.vip.due_date = 466982416e4);
     }
@@ -72,11 +93,11 @@ if (url.includes("app.bilibili.com/x/v2/splash/")) {
     body = JSON.stringify(i);
 } else if (url.includes("pgc/page/bangumi") || url.includes("pgc/page/cinema/tab?")) {
     let i = JSON.parse($response.body);
-    i.result?.modules && (i.result.modules.forEach((i => {
+    i.result?.modules && (i.result.modules.forEach((i) => {
         i.style.startsWith("tip") || [1283, 241, 1441, 1284].includes(i.module_id) ? i.items = [] :
-        i.style.startsWith("banner") ? i.items = i.items.filter((i => i.link.includes("play"))) :
-        i.style.startsWith("function") && (i.items = i.items.filter((i => i.blink.startsWith("bilibili"))))
-    })), body = JSON.stringify(i));
+        i.style.startsWith("banner") ? i.items = i.items.filter((i) => i.link.includes("play")) :
+        i.style.startsWith("function") && (i.items = i.items.filter((i) => i.blink.startsWith("bilibili")));
+    }), body = JSON.stringify(i));
 }
 
 body ? $done({ body }) : $done({});
