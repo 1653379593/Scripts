@@ -1,9 +1,7 @@
-#!name=Bilibili AdBlock
-#!desc=Converted from QX Bilibili AdBlock Rules
-#!author=ddgksf2013
-#!tgchannel=https://t.me/ddgksf2021
-# Surge Module Source: https://github.com/ddgksf2013/Modules
-# Original QX Rewrite Source: https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/BilibiliAds.conf
+#!name=Ehbien
+#!desc=哔哩哔哩去广告+外观布局
+#!system=ios
+
 
 [URL Rewrite]
 //2022-03-13 - reject
