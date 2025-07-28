@@ -7,12 +7,8 @@
 //2022-03-13 - reject
 # > BiliBili_哔哩哔哩_Version
 ^https?:\/\/bilibili.2025.04.02/c136 - reject
-# > BiliBili_哔哩哔哩_屏蔽广告浮窗@ddgksf2013
-^https?:\/\/api\.bilibili\.com\/pgc\/activity\/deliver\/material\/receive - reject
 # > BiliBili_哔哩哔哩_Material_Ad@ddgksf2013
 ^https?:\/\/api\.bilibili\.com\/x\/vip\/ads\/material\/report - reject
-# > BiliBili_哔哩哔哩_小卡片广告@ddgksf2013
-^https://api.bilibili.com/pgc/season/player/cards - reject
 # > BiliBili_哔哩哔哩_点击追番Card@ddgksf2013
 ^https?:\/\/api\.bilibili\.com\/pgc\/season\/player\/ogv\/cards - reject
 # > BiliBili_哔哩哔哩_填词@ddgksf2013
