@@ -1,0 +1,109 @@
+/**
+ * Surge Script - 自动注册 (批量并发极速版)
+ * * ⚠️ 必须在脚本配置中增加 timeout=120
+ * 逻辑：每组并发 5 个，循环 10 轮，共 50 次
+ */
+//第九行改成自己的邀请码
+
+// --- 配置区域 ---
+const url = "https://api.yuetujsq.cc/index.php/api/user/register";
+const inviteCode = "YGVUnZsl";
+const maxTaskCount = 100; // 总次数
+const batchSize = 10;     // 并发数量 (一次5个)
+
+// --- 变量 ---
+let successCount = 0;
+
+console.log(`[Script] 极速模式启动: 总目标 ${maxTaskCount} 次，每次并发 ${batchSize} 个`);
+
+// 工具函数
+function getRandomNumber(length) {
+    let str = "";
+    for (let i = 0; i < length; i++) {
+        str += Math.floor(Math.random() * 10);
+    }
+    return str;
+}
+
+// 单次任务 (Promise 封装)
+function runTask(index) {
+    return new Promise((resolve) => {
+        // 生成独立数据
+        const mobile = "1" + getRandomNumber(10);
+        const password = getRandomNumber(4);
+        const verifyCode = getRandomNumber(6);
+
+        const payload = {
+            "username": mobile,
+            "password": password,
+            "email": mobile,
+            "imail": "",
+            "invite": inviteCode,
+            "code": verifyCode,
+            "vali_email": null,
+            "vali_code": null
+        };
+
+        const headers = {
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Mobile/15E148 Safari/604.1",
+            "Origin": "https://yuetujsq.cc",
+            "Referer": "https://yuetujsq.cc/"
+        };
+
+        $httpClient.post({
+            url: url,
+            headers: headers,
+            body: JSON.stringify(payload)
+        }, function(error, response, data) {
+            // 无论成功失败，都 resolve，保证队列继续
+            if (error) {
+                console.log(`[任务 ${index}] ❌ 网络错误`);
+            } else {
+                try {
+                    if (data && data.indexOf("blocked") === -1) {
+                        console.log(`[任务 ${index}] ✅ 发送成功 (${mobile})`);
+                        successCount++;
+                    } else {
+                        console.log(`[任务 ${index}] ⚠️ 被阻断/失败`);
+                    }
+                } catch (e) {
+                    console.log(`[任务 ${index}] 解析异常`);
+                }
+            }
+            resolve(); 
+        });
+    });
+}
+
+// 主控逻辑
+async function main() {
+    // 计算需要跑几轮
+    const totalBatches = Math.ceil(maxTaskCount / batchSize);
+
+    for (let i = 0; i < totalBatches; i++) {
+        const batchPromises = [];
+        const startNum = i * batchSize + 1;
+        
+        console.log(`--- 开始第 ${i + 1}/${totalBatches} 批次 (任务 ${startNum} - ${Math.min(startNum + batchSize - 1, maxTaskCount)}) ---`);
+
+        // 构建当前批次的 5 个任务
+        for (let j = 0; j < batchSize; j++) {
+            const currentTaskIndex = startNum + j;
+            if (currentTaskIndex <= maxTaskCount) {
+                batchPromises.push(runTask(currentTaskIndex));
+            }
+        }
+
+        // 并发执行这 5 个，等待它们全部完成（Promise.all）
+        // 这里没有 sleep，这批做完立刻下一批
+        await Promise.all(batchPromises);
+    }
+
+    console.log(`[Script] 全部完成。成功发送请求: ${successCount}`);
+    $notification.post("极速注册完成", `共执行: ${maxTaskCount} 次`, `成功发送: ${successCount} 次`);
+    $done();
+}
+
+// 启动
+main();
